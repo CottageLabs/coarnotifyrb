@@ -16,12 +16,12 @@ module Coarnotify
       # @return [AnnounceEndorsementContext, nil] The Announce Endorsement context object
       def context
         c = get_property(Core::ActivityStreams2::Properties::CONTEXT)
-        if c
-          AnnounceEndorsementContext.new(stream: c, validate_stream_on_construct: false,
-                                         validate_properties: @validate_properties, validators: @validators,
-                                         validation_context: Core::ActivityStreams2::Properties::CONTEXT,
-                                         properties_by_reference: @properties_by_reference)
-        end
+        return unless c
+
+        AnnounceEndorsementContext.new(stream: c, validate_stream_on_construct: false,
+                                       validate_properties: @validate_properties, validators: @validators,
+                                       validation_context: Core::ActivityStreams2::Properties::CONTEXT,
+                                       properties_by_reference: @properties_by_reference)
       end
 
       # Set the context property of the notification
@@ -35,17 +35,18 @@ module Coarnotify
       #
       # @return [Boolean] true if valid, otherwise raises ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::CONTEXT, context)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
@@ -58,12 +59,12 @@ module Coarnotify
       # @return [AnnounceEndorsementItem, nil] the Announce Endorsement Item
       def item
         i = get_property(Core::Notify::NotifyProperties::ITEM)
-        if i
-          AnnounceEndorsementItem.new(stream: i, validate_stream_on_construct: false,
-                                      validate_properties: @validate_properties, validators: @validators,
-                                      validation_context: Core::Notify::NotifyProperties::ITEM,
-                                      properties_by_reference: @properties_by_reference)
-        end
+        return unless i
+
+        AnnounceEndorsementItem.new(stream: i, validate_stream_on_construct: false,
+                                    validate_properties: @validate_properties, validators: @validators,
+                                    validation_context: Core::Notify::NotifyProperties::ITEM,
+                                    properties_by_reference: @properties_by_reference)
       end
 
       # Set the item property
@@ -84,18 +85,19 @@ module Coarnotify
       #
       # @return [Boolean] true if valid, otherwise raises a ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::TYPE, type)
         required(ve, Core::Notify::NotifyProperties::MEDIA_TYPE, media_type)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
