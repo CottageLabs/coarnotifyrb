@@ -11,17 +11,27 @@ This library provides a complete Ruby implementation of all COAR Notify patterns
 
 ## Installation
 
+This package has not been published as a gem package yet. To use it in your project:
+
 Add this line to your application's Gemfile:
+
+```ruby
+gem 'coarnotify', git: 'https://github.com/coar-notify/coarnotifyrb.git'
+```
+
+And then execute:
+
+```cmd
+$ bundle install
+```
+
+Once published, you'll be able to install it directly:
 
 ```ruby
 gem 'coarnotify'
 ```
 
-And then execute:
-
-    $ bundle install
-
-Or install it yourself as:
+Or:
 
     $ gem install coarnotify
 
