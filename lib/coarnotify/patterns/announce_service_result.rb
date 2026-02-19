@@ -17,12 +17,12 @@ module Coarnotify
       # @return [AnnounceServiceResultObject, nil] AnnounceServiceResultObject
       def object
         o = get_property(Core::ActivityStreams2::Properties::OBJECT)
-        if o
-          AnnounceServiceResultObject.new(stream: o, validate_stream_on_construct: false,
-                                          validate_properties: @validate_properties, validators: @validators,
-                                          validation_context: Core::ActivityStreams2::Properties::OBJECT,
-                                          properties_by_reference: @properties_by_reference)
-        end
+        return unless o
+
+        AnnounceServiceResultObject.new(stream: o, validate_stream_on_construct: false,
+                                        validate_properties: @validate_properties, validators: @validators,
+                                        validation_context: Core::ActivityStreams2::Properties::OBJECT,
+                                        properties_by_reference: @properties_by_reference)
       end
 
       # Set the object property of the notification
@@ -37,12 +37,12 @@ module Coarnotify
       # @return [AnnounceServiceResultContext, nil] AnnounceServiceResultContext
       def context
         c = get_property(Core::ActivityStreams2::Properties::CONTEXT)
-        if c
-          AnnounceServiceResultContext.new(stream: c, validate_stream_on_construct: false,
-                                           validate_properties: @validate_properties, validators: @validators,
-                                           validation_context: Core::ActivityStreams2::Properties::CONTEXT,
-                                           properties_by_reference: @properties_by_reference)
-        end
+        return unless c
+
+        AnnounceServiceResultContext.new(stream: c, validate_stream_on_construct: false,
+                                         validate_properties: @validate_properties, validators: @validators,
+                                         validation_context: Core::ActivityStreams2::Properties::CONTEXT,
+                                         properties_by_reference: @properties_by_reference)
       end
 
       # Set the context property of the notification
@@ -56,17 +56,18 @@ module Coarnotify
       #
       # @return [Boolean] true if valid, otherwise raises ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::CONTEXT, context)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
@@ -78,12 +79,12 @@ module Coarnotify
       # @return [AnnounceServiceResultItem, nil] the item
       def item
         i = get_property(Core::Notify::NotifyProperties::ITEM)
-        if i
-          AnnounceServiceResultItem.new(stream: i, validate_stream_on_construct: false,
-                                        validate_properties: @validate_properties, validators: @validators,
-                                        validation_context: Core::Notify::NotifyProperties::ITEM,
-                                        properties_by_reference: @properties_by_reference)
-        end
+        return unless i
+
+        AnnounceServiceResultItem.new(stream: i, validate_stream_on_construct: false,
+                                      validate_properties: @validate_properties, validators: @validators,
+                                      validation_context: Core::Notify::NotifyProperties::ITEM,
+                                      properties_by_reference: @properties_by_reference)
       end
 
       # Set the item property
@@ -103,18 +104,19 @@ module Coarnotify
       #
       # @return [Boolean] true if validation passes, else raise a ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::TYPE, type)
         required(ve, Core::Notify::NotifyProperties::MEDIA_TYPE, media_type)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
@@ -127,17 +129,18 @@ module Coarnotify
       #
       # @return [Boolean] true if validation passes, else raise a ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::TYPE, type)
 
         raise ve if ve.has_errors?
+
         true
       end
     end

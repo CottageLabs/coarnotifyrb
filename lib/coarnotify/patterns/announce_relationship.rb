@@ -16,12 +16,12 @@ module Coarnotify
       # @return [AnnounceRelationshipObject, nil] the object
       def object
         o = get_property(Core::ActivityStreams2::Properties::OBJECT)
-        if o
-          AnnounceRelationshipObject.new(stream: o, validate_stream_on_construct: false,
-                                         validate_properties: @validate_properties, validators: @validators,
-                                         validation_context: Core::ActivityStreams2::Properties::OBJECT,
-                                         properties_by_reference: @properties_by_reference)
-        end
+        return unless o
+
+        AnnounceRelationshipObject.new(stream: o, validate_stream_on_construct: false,
+                                       validate_properties: @validate_properties, validators: @validators,
+                                       validation_context: Core::ActivityStreams2::Properties::OBJECT,
+                                       properties_by_reference: @properties_by_reference)
       end
 
       # Set the object property of the notification
@@ -35,17 +35,18 @@ module Coarnotify
       #
       # @return [Boolean] true if valid, otherwise raises ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::CONTEXT, context)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
@@ -61,12 +62,12 @@ module Coarnotify
       #
       # @return [Boolean] true if validation passes, otherwise raise a ValidationError
       def validate
-        ve = Core::Notify::ValidationError.new
+        ve = Coarnotify::ValidationError.new
 
         begin
           super
-        rescue Core::Notify::ValidationError => superve
-          ve = superve
+        rescue Coarnotify::ValidationError => e
+          ve = e
         end
 
         required_and_validate(ve, Core::ActivityStreams2::Properties::TYPE, type)
@@ -75,6 +76,7 @@ module Coarnotify
         required_and_validate(ve, Core::ActivityStreams2::Properties::RELATIONSHIP_TRIPLE, relationship)
 
         raise ve if ve.has_errors?
+
         true
       end
     end
